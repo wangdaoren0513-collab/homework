@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="IyM4tCMSo6QLmgsZdBwoVr">
+<head data-page-node-id="xxCiVnPtpXQEABZ9qBqBPp">
+<meta charset="UTF-8" data-page-node-id="JA08CjyrSkLhaUEOVvqWhH">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" data-page-node-id="74eUfiQmkMCQqKiKfVf4fP">
+<meta name="theme-color" content="#3b82f6" data-page-node-id="R3Fm7AHawZhHyu7H9oFK0S">
+<meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="xmoJpeEH4cr0OUSm69JR3b">
+<title>作业·日程小管家</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' data-page-node-id="fAH4OsswBCNNa88qUZEypd"><text y='.9em' font-size='90' data-page-node-id="v92bm6sINax71KjG25amwV">📚</text></svg>">
+<link rel="stylesheet" href="styles.css" data-page-node-id="IYNilELVIKysPbXdUEpjv3">
+</head>
+<body data-page-node-id="PTjE7TcBmpvJY4EAj6p8y1">
+
+<header class="topbar" data-page-node-id="gFdNUGmmQMugj15fWRzdcn">
+  <div class="topbar-inner" data-page-node-id="snxCjqi64T8DpzlTDuaLfc">
+    <div class="brand" data-page-node-id="aaAD4ANVtgocL5OaADiKKJ">
+      <span class="brand-icon" data-page-node-id="xDvcabWPdE2ZFnLcgsjqhi">📚</span>
+      <span class="brand-text" data-page-node-id="VB4aPOrTp6CavhU5hiTCYk">作业·日程小管家</span>
+    </div>
+    <nav class="tabs" role="tablist" data-page-node-id="BWCRWD68ge8efDQxMSThwU">
+      <button class="tab is-active" data-view="week" role="tab" data-page-node-id="uxGdcsJljEnc9xgwhNIdOT">本周作业</button>
+      <button class="tab" data-view="history" role="tab" data-page-node-id="gPbtSokD1u7GIKbBqOlirr">历史统计</button>
+      <button class="tab btn-icon" data-view="settings" role="tab" title="设置" data-page-node-id="GV81IaRhMuRIxoPSV0SArH">⚙️</button>
+    </nav>
+  </div>
+</header>
+
+<main class="page" data-page-node-id="GKLRxnM3ROdgEp6SmtQPsd">
+
+  <div class="banner" id="syncBanner" hidden data-page-node-id="VhWNFljRcPhSvl4NlQKFIv">
+    <span id="syncBannerText" data-page-node-id="bt1sBbIixlRV2M1TAvUsho"></span>
+    <button class="banner-btn" id="syncBannerBtn" data-page-node-id="sEchUSjAxGt4rnxzAbxK5t">去设置</button>
+  </div>
+
+  <!-- ============ 本周作业视图 ============ -->
+  <section id="view-week" class="view is-active" data-page-node-id="jbdRkNUjpt1vRNxARJ7hbO">
+
+    <!-- 周 / 月 / 年 切换 -->
+    <div class="period-bar card">
+      <div class="seg" id="periodSeg">
+        <button class="seg-btn is-on" data-period="week">周</button>
+        <button class="seg-btn" data-period="month">月</button>
+        <button class="seg-btn" data-period="year">年</button>
+      </div>
+      <div class="period-nav" id="periodNav">
+        <button class="nav-btn" id="periodPrev" aria-label="上一周期">‹</button>
+        <span class="period-title" id="periodTitle"></span>
+        <button class="nav-btn" id="periodNext" aria-label="下一周期">›</button>
+        <button class="ghost-btn" id="periodToday">今天</button>
+      </div>
+    </div>
+
+    <!-- 周视图 -->
+    <div id="panelWeek">
+    <div class="week-nav card" data-page-node-id="7PLhiMYK0aeKom8s1hhuOE">
+      <button class="nav-btn" id="prevWeek" aria-label="上一周" data-page-node-id="rjEV7fvwu5jJHwObNcTED8">‹</button>
+      <div class="week-title" data-page-node-id="DOxtGnUryKFgr9yxLKLd22">
+        <div class="week-range" id="weekRange" data-page-node-id="GOMvqHAEiv6g8hLACHomJT">--</div>
+        <div class="week-sub" id="weekSub" data-page-node-id="pSUTCC2XOhTGhLHdi99iTG">--</div>
+      </div>
+      <button class="nav-btn" id="nextWeek" aria-label="下一周" data-page-node-id="wD3VZ7BIkqfddtEaHuW7BB">›</button>
+      <button class="ghost-btn" id="todayBtn" data-page-node-id="LpTIAL8G7B95AnaARuD9BS">回到本周</button>
+      <button class="ghost-btn accent" id="btnBatch" data-page-node-id="TvG92S9tsJkC0wokKtCFlD">📋 批量粘贴</button>
+    </div>
+
+    <div class="stat-card card" data-page-node-id="Hj9xIKXHxqnZX7fNaZDzyG">
+      <div class="ring" id="weekRing" data-page-node-id="swjUSEZTqslp0uWfI1SvLY">
+        <svg viewBox="0 0 120 120" aria-hidden="true" data-page-node-id="2U4TjRrR0YWd7yoi43YBn5">
+          <circle class="ring-bg" cx="60" cy="60" r="52" data-page-node-id="29unDIMjmI9zeUzBZmViOy"></circle>
+          <circle class="ring-fg" cx="60" cy="60" r="52" id="ringFg" data-page-node-id="37Idaw5klubB4ffRZ2S2ZX"></circle>
+        </svg>
+        <div class="ring-text" data-page-node-id="Yoiui4FzMI64ZurF1ZAYg6"><span id="ringPct" data-page-node-id="DbKzin9oV1dX3jcK4sV8Re">0%</span></div>
+      </div>
+      <div class="stat-info" data-page-node-id="QWgV96UYHEo3Xl0ub9pYUS">
+        <div class="stat-line" data-page-node-id="zyjYIltj3TNeZdw2zwW7Mr"><b id="statDone" data-page-node-id="WReapHyE8RkLlcCGqfNqtD">0</b> / <span id="statTotal" data-page-node-id="S3UwpRVCB2B7pEjZ39sSR3">0</span> 项已完成</div>
+        <div class="stat-bars" id="subjectBars" data-page-node-id="ZOiaRbww4cqPazg7Ae4PgB"></div>
+      </div>
+    </div>
+
+    <div class="filter-bar card" data-page-node-id="8GqaT6zeBryQUZdIiOHriE">
+      <div class="filter-group" data-page-node-id="h5yUIRIwXqehDriehQk0qz">
+        <span class="filter-label" data-page-node-id="LIobxUMs4ZVbBZvG3CwoYk">科目</span>
+        <div class="chips" id="filterSubject" data-page-node-id="xktVPWJcBE4FPKGHrsmHE8">
+          <button class="chip is-on" data-value="all" data-page-node-id="hSNZYYQyerwtkVYM0exq7F">全部</button>
+          <button class="chip" data-value="语文" data-page-node-id="RGnJcjHiJGHoS9I2wvFDZI">📖 语文</button>
+          <button class="chip" data-value="数学" data-page-node-id="UF22ogt6LckUPWhGVB8FCA">🔢 数学</button>
+          <button class="chip" data-value="英语" data-page-node-id="hsySrsPgMxe1gdt5RGbQnM">🔤 英语</button>
+        </div>
+      </div>
+      <div class="filter-group" data-page-node-id="trWeWa6ZmMSamAbzM0AYkN">
+        <span class="filter-label" data-page-node-id="AkNjY5Vnz7jpDKF3tNsXhD">状态</span>
+        <div class="chips" id="filterStatus" data-page-node-id="wcJwQZDAJkiIKIQRVEyzMC">
+          <button class="chip is-on" data-value="all" data-page-node-id="ynpTLrNNwyzjqfgy2utdAy">全部</button>
+          <button class="chip" data-value="todo" data-page-node-id="sYtiAJX8UZm1CacwtCBEfa">⏳ 未完成</button>
+          <button class="chip" data-value="done" data-page-node-id="cIvx8MGRMgiM1K8mJBGQDy">✅ 已完成</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="board" id="board" data-page-node-id="ZZWcfZrYAxhnV2JoX9zEDs"></div>
+    </div>
+
+    <!-- 月视图 -->
+    <div id="panelMonth" hidden>
+      <div class="card cal-card">
+        <div class="month-grid" id="monthGrid"></div>
+      </div>
+    </div>
+
+    <!-- 年视图 -->
+    <div id="panelYear" hidden>
+      <div class="year-grid" id="yearGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ 历史统计视图 ============ -->
+  <section id="view-history" class="view" data-page-node-id="WCYUz5qY91KQgzVwppmEYL">
+    <div class="filter-bar card" data-page-node-id="mrMJlIMrKJTnNmV3EZBiAM">
+      <div class="filter-group" data-page-node-id="1im6IJRgcCpctx1IJvgt1k">
+        <span class="filter-label" data-page-node-id="9w1Op4zCPsRRTm5IMIbbIW">时间</span>
+        <div class="chips" id="histRange" data-page-node-id="4N9nC9gWf4OTgoRXWBB9BZ">
+          <button class="chip is-on" data-value="4" data-page-node-id="9tRTI66xueSqoCQHVaHG17">近 4 周</button>
+          <button class="chip" data-value="12" data-page-node-id="GtzxVZZ806zNjON8mzBZys">近 12 周</button>
+          <button class="chip" data-value="all" data-page-node-id="QpKZfy7ZzRC9Ujcs4HZnXV">全部</button>
+        </div>
+      </div>
+      <div class="filter-group" data-page-node-id="SgbNQVG4JTt89i3KEjw0oA">
+        <span class="filter-label" data-page-node-id="9GcOSQtMuJ1GVB3nEBOFXe">科目</span>
+        <div class="chips" id="histSubject" data-page-node-id="XyB1u2ULn3xe3JY1w619Qn">
+          <button class="chip is-on" data-value="all" data-page-node-id="TxFNqqjJQcGbW8J19UjJdj">全部</button>
+          <button class="chip" data-value="语文" data-page-node-id="wQa1a0suXYo8sPyusuVJCB">📖 语文</button>
+          <button class="chip" data-value="数学" data-page-node-id="Qsnjp8iYJlX5PRPVWhZNxI">🔢 数学</button>
+          <button class="chip" data-value="英语" data-page-node-id="M5ZCbxoYAXgMhdPDaV6yrT">🔤 英语</button>
+        </div>
+      </div>
+      <div class="filter-group" data-page-node-id="5ckqwzgiTtkEjyousfHWeR">
+        <span class="filter-label" data-page-node-id="52QmWIiOKcq6LEh7BUJHJ3">状态</span>
+        <div class="chips" id="histStatus" data-page-node-id="OiJ8zmNiuhen1Zu4vE0Lq4">
+          <button class="chip is-on" data-value="all" data-page-node-id="AcVpUpNFN94mT70KDvCY54">全部</button>
+          <button class="chip" data-value="todo" data-page-node-id="acBpnItpnfCJZTvuCsbfgr">⏳ 未完成</button>
+          <button class="chip" data-value="done" data-page-node-id="68KmNyyNOKZkfMssYFVnGY">✅ 已完成</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row" id="histSummary" data-page-node-id="0mHyy8FhZDP7KJIE2rj7Ec"></div>
+    <div class="history-list" id="historyList" data-page-node-id="rGgEn6EIvht2biHUhkMxn4"></div>
+  </section>
+
+  <!-- ============ 设置视图 ============ -->
+  <section id="view-settings" class="view" data-page-node-id="0NbtwTBn9tgUq3PKfy1YWl">
+    <div class="card setting-card" data-page-node-id="d1emlFw1epAH5UnfWidSnW">
+      <h3 data-page-node-id="JHMEwUGJFiJu85qt5dEZkf">☁️ 云端存储</h3>
+      <p class="hint" data-page-node-id="IkD6iG6cEUZ4OVeQFy56kz">开启后，作业存在云数据库里，手机和电脑不管在哪、用什么网络，看到的都是同一份。</p>
+      <p class="hint ok-hint" data-page-node-id="7ywlAlH5JyEuEy87vNelg6">✅ 云端配置已内置，打开就能用，<b data-page-node-id="BeXhJLsd0i3ZywLGcsE6SI">一般不用改</b>。换设备时只要填同一个「家庭码」即可。</p>
+
+      <label class="field" data-page-node-id="7pRbb4GN8w24JClzMDdxKM">
+        <span data-page-node-id="7lFhjJluPzlRGULOKBR3Lp">存储方式</span>
+        <select id="syncType" data-page-node-id="nkhxLBGYLesijFzLZ7u0VH">
+          <option value="none" data-page-node-id="IpN65t1S7uDDKIJNBeM3pD">只存在这台设备（不同步）</option>
+          <option value="supabase" data-page-node-id="WBfUYNbxwU7YWTAyNdScXV">Supabase 云数据库</option>
+          <option value="rest" data-page-node-id="HdHXITEQxWYbNlaSByqKtf">自建服务 / Cloudflare Worker</option>
+        </select>
+      </label>
+
+      <div id="cfgSupabase" class="cfg" hidden data-page-node-id="OiAL3C8lNAmVJrg1pIKM7g">
+        <label class="field" data-page-node-id="7TL9d13OLJDJFEvYDTb2hA">
+          <span data-page-node-id="J607AEzzgxlbYno3EebOKl">项目地址 Project URL</span>
+          <input type="text" id="sbUrl" placeholder="https://xxxxxxxx.supabase.co" autocomplete="off" spellcheck="false" data-page-node-id="iDVXkyxkdvfVbpy8flbqJD">
+        </label>
+        <label class="field" data-page-node-id="xr47hU2RAaaGCu73HSBC8G">
+          <span data-page-node-id="plWB6U8fnCXlFmE9AZZkdW">anon public key</span>
+          <input type="text" id="sbKey" placeholder="eyJhbGciOi..." autocomplete="off" spellcheck="false" data-page-node-id="cIfj8rTLstlBlYH6OpSooH">
+        </label>
+      </div>
+
+      <div id="cfgRest" class="cfg" hidden data-page-node-id="Ce864FI6qdoxS3OY8Dpxw5">
+        <label class="field" data-page-node-id="BoewRGKfCjUwczft2sNjiy">
+          <span data-page-node-id="dfu7dhulWZqhkLIwY5pFqX">云端地址</span>
+          <input type="text" id="syncApi" placeholder="留空表示与网页同源 /api" data-page-node-id="0PWHnBsxAiP6fBn8PxSitG">
+        </label>
+      </div>
+
+      <div id="cfgCode" class="cfg" hidden data-page-node-id="vLYobOWW8oivPZv9ohZPhC">
+        <label class="field" data-page-node-id="rjic4MYn7AyAEA49lLUruG">
+          <span data-page-node-id="4FDLqqD28Ve8kjPP4DY6VG">家庭码</span>
+          <input type="text" id="syncCode" placeholder="例如：xiaoming-2026" autocomplete="off" data-page-node-id="Oxxtx8gjHEuPxCpE1Jcs01">
+        </label>
+      </div>
+
+      <div id="cfgCommon" class="cfg" hidden data-page-node-id="h44ZR5jNfG35F63o6XplbS">
+        <label class="switch" data-page-node-id="3Uw9FyIy5fwLiyAR06SoHc">
+          <input type="checkbox" id="syncOn" data-page-node-id="l1lNLX6U5nqfirg2kdmguB">
+          <span class="switch-track" data-page-node-id="BCChuqFvjgLTJS5EqzLCXE"><span class="switch-dot" data-page-node-id="GBHDT6zTXLeCXxCEWY0TK3"></span></span>
+          <span class="switch-text" data-page-node-id="uGtdiMB8AxJr8UUGwqGklp">开启自动同步</span>
+        </label>
+        <div class="btn-row" data-page-node-id="1Eaeff4LIdZZvyNODjhhGc">
+          <button class="btn primary" id="btnPush" data-page-node-id="50zsGclhVZlGCJCdQTs8Ns">🔄 立即同步</button>
+          <button class="btn" id="btnPull" data-page-node-id="LReU7IzN8bZrxzp3P2qGyX">⬇️ 只看云端</button>
+          <button class="btn" id="btnTest" data-page-node-id="0G1WG5BR5exyCNP7I19x3P">🔌 测试连接</button>
+        </div>
+        <div class="sync-state" id="syncState" data-page-node-id="H0KqOzIyTvP2M8UMB0qNAC">未开启同步</div>
+      </div>
+
+      <details class="howto" id="howtoSupabase" hidden data-page-node-id="8DWvJbClP6P81xaMIWcOTW">
+        <summary data-page-node-id="eRfIAO1NRup9sg6DLT7qYb">Supabase 怎么配？（约 3 分钟）</summary>
+        <ol data-page-node-id="sc9GRuPvlziZijYEnkyTSC">
+          <li data-page-node-id="o15ES6lz3nP6gZXdFGs5ZH">打开 <b data-page-node-id="LtfbzdVriEFZKqeqz5KShM">supabase.com</b> 注册并新建项目，选免费套餐即可（地区建议 Singapore 或 Tokyo，国内访问更快）</li>
+          <li data-page-node-id="Zat4gacvdD6jHK9KcWP2dQ">左侧 <b data-page-node-id="4xM3UVqnGm79VHeLLOPTVm">SQL Editor</b> → <b data-page-node-id="WP5p2P43Ox0J9y3DNQoHdl">New query</b>，粘贴下面这段后点 <b data-page-node-id="A8cPphSil95dxBzEvbtctd">Run</b></li>
+        </ol>
+        <pre class="sql" id="sqlBlock" data-page-node-id="YjmHiXUk3cCSRqLaEcz9A1">create table homework (
+  code text primary key,
+  items jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table homework enable row level security;
+
+create policy "homework_all" on homework
+  for all to anon using (true) with check (true);</pre>
+        <div class="btn-row" data-page-node-id="QlSxoOnGE22gsf92eXAFwV"><button class="btn small" id="btnCopySql" data-page-node-id="WwwQhTV4u6rZ555V6DVuPX">复制建表 SQL</button></div>
+        <ol start="3" data-page-node-id="XmOInC4eCMwpnvXJ0noAs1">
+          <li data-page-node-id="I1PBpuoqWvTZDH7WvHLTjc">左侧 <b data-page-node-id="Ni8C03EHMXICubuw0kkB9b">Project Settings</b> → <b data-page-node-id="oiJ6IhAmAQIWGUwPHaMqzB">API</b>，把 <b data-page-node-id="odKNybdg3e9zi5UIqOWg4s">Project URL</b> 和 <b data-page-node-id="jnePglh0Wo5B5SoGr0ZnVv">anon public</b> 复制回来填到上面</li>
+          <li data-page-node-id="LMNAhqB3ZKtPhBtie8P7Mu">手机和电脑都填同一个家庭码，点「测试连接」，出现绿色的「已连接云端」就成功了</li>
+        </ol>
+        <p data-page-node-id="bUruMmHOq8Hea0pPgYHsVe">提示：家庭码相当于数据钥匙，建议用 <code data-page-node-id="vOnD9MwJtVW0Xpeq4IfSlt">姓名+班级+随机数字</code> 这种不容易猜到的组合。</p>
+      </details>
+
+      <details class="howto" id="howtoRest" hidden data-page-node-id="GfODTvVyYxf4t1D7ZRVwJu">
+        <summary data-page-node-id="E0k0fSvYQ1SGLQ1zwdFbe5">自建服务怎么配？</summary>
+        <p data-page-node-id="9uajNvOxQkwnlN2H3gA65r">在服务器或家里的电脑上运行 <code data-page-node-id="mIcHGVc4fMGZ4rg3iU0Yng">server.js</code>（macOS 双击 <code data-page-node-id="n0TXZX5cgjGLLczErrki9p">启动.command</code>，Windows 双击 <code data-page-node-id="Jb4vfGQzbBNSSynDePsLvH">启动.bat</code>），把显示的地址填到上面的「云端地址」。</p>
+        <p data-page-node-id="fm6Gsd0Up0NOi9E6HjKbSd">用 <code data-page-node-id="J9OA7VeTr4uGFi9Yu0QbHX">http://192.168.x.x:3000</code> 这类局域网地址时，手机要连同一个 Wi-Fi；部署成公网域名后，在外面也能用。</p>
+      </details>
+    </div>
+
+    <div class="card setting-card" data-page-node-id="BO7ktqCEA0onIXciAMD6Tg">
+      <h3 data-page-node-id="5UZYKQYLIph4T0nvMVfCj8">💾 数据备份</h3>
+      <p class="hint" data-page-node-id="Oe0FRFAztHhTrhVBKf4bPb">可以把所有作业导出成一个文件保存，换设备时再导入。</p>
+      <div class="btn-row" data-page-node-id="4FoWFbEnWYL5FFEYDGPVMr">
+        <button class="btn primary" id="btnExport" data-page-node-id="Yni0HHUFG89XKAcmbRwhly">导出备份文件</button>
+        <button class="btn" id="btnImport" data-page-node-id="Cu5GE52fMzDXtQnG5XcAKW">导入备份文件</button>
+        <input type="file" id="fileInput" accept="application/json,.json" hidden data-page-node-id="kpJ6lbEkk0r1awFBYg9wma">
+      </div>
+    </div>
+
+    <div class="card setting-card" data-page-node-id="CERGlKTr8LRTN8kpCg5eEp">
+      <h3 data-page-node-id="nc65sOER5NoZuVrw7ZetTd">🧹 清理</h3>
+      <p class="hint" data-page-node-id="RHt8GFONMz0LXm1Jv4hW0H">清空本机上的所有作业记录（不会影响云端数据）。</p>
+      <div class="btn-row" data-page-node-id="E4i7NNuHEEozSsmMo0LX2i">
+        <button class="btn danger" id="btnClear" data-page-node-id="j1IDx4GRnUl7jL2vMPftoM">清空本机数据</button>
+      </div>
+    </div>
+
+    <div class="card setting-card" data-page-node-id="Lyu42tgOVcKXD6KfwzQxvr">
+      <h3 data-page-node-id="VZtZpRDT4525VcNBlSl4IG">ℹ️ 关于</h3>
+      <p class="hint" id="aboutText" data-page-node-id="xvKKfsoOVtkHuuptZpd4kv">数据默认保存在这台设备的浏览器里，刷新不会丢失。</p>
+    </div>
+  </section>
+
+</main>
+
+<button class="fab" id="fab" title="添加作业" aria-label="添加作业" data-page-node-id="b2tDzMIu359GmWF6uBE5E0">＋</button>
+
+<!-- 编辑 / 新增弹窗 -->
+<div class="modal" id="editModal" aria-hidden="true" data-page-node-id="yaUKbDrAb6hzIAwNdTDmTz">
+  <div class="modal-mask" data-close data-page-node-id="bWgrOBGmNOPOGXi8AOGcAz"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" data-page-node-id="FtkDzxfOIRkvl9fUwBgJKT">
+    <div class="modal-head" data-page-node-id="xhWjIDmm8fPmuaFKMHm9Ma">
+      <h3 id="modalTitle" data-page-node-id="ZecsoIcVtCI6RswMhGCt86">添加作业</h3>
+      <button class="icon-btn" data-close aria-label="关闭" data-page-node-id="QunAsXVHPhzCkcSICHzLrE">✕</button>
+    </div>
+    <div class="modal-body" data-page-node-id="Ca1bo1crnxPO4MCqsFMK67">
+      <!-- 类型：作业 / 事项 -->
+      <div class="field">
+        <span class="field-label">类型</span>
+        <div class="chips wrap" id="choiceKind"></div>
+      </div>
+
+      <!-- 作业相关（仅作业显示） -->
+      <div class="field hw-only" data-page-node-id="VBDeHOyB6xS8QSki8vTbDH">
+        <span class="field-label" data-page-node-id="nYsmD40lpxG314JGD4Z8lR">科目</span>
+        <div class="big-choice" id="choiceSubject" data-page-node-id="Ie8Fj1kWln7aNZXUCAv0U7">
+          <button class="big-opt" data-value="语文" data-page-node-id="AXRsOYLVOJbtC66WLJ8ZwN"><span class="opt-icon" data-page-node-id="K0RdSG315DG3AyfdYuKc1b">📖</span><span data-page-node-id="TGFqFOuUuckZn1Ixu1ocaQ">语文</span></button>
+          <button class="big-opt" data-value="数学" data-page-node-id="rvyPJJ59BonPfiNxTnQfjy"><span class="opt-icon" data-page-node-id="VZlj4pAv80yC9pB1LgnAGp">🔢</span><span data-page-node-id="WRcqdyakYoqsvnmUmprekN">数学</span></button>
+          <button class="big-opt" data-value="英语" data-page-node-id="RodXVQpl8fR1uZTZIvlMZ3"><span class="opt-icon" data-page-node-id="gS79eULOnQnUN11zSWbFYT">🔤</span><span data-page-node-id="DmXsMvBnV9G3sS2Hd1Vu2A">英语</span></button>
+        </div>
+      </div>
+      <div class="field hw-only" data-page-node-id="udL61eCQbULaxwtrozSg0M">
+        <span class="field-label" data-page-node-id="pPqoEZ8DK22DBM8adh4wxc">作业类型</span>
+        <div class="chips wrap" id="choiceType" data-page-node-id="MoJtNDJvusNuA972FdajFs"></div>
+      </div>
+
+      <!-- 事项相关（仅事项显示） -->
+      <div class="field ev-only">
+        <span class="field-label">标题</span>
+        <input type="text" id="fTitle" placeholder="例如：去社区办医保 / 上钢琴课">
+      </div>
+      <div class="field ev-only">
+        <span class="field-label">时间（可选）</span>
+        <input type="time" id="fTime">
+      </div>
+
+      <!-- 作业内容（仅作业） -->
+      <label class="field hw-only" data-page-node-id="sQ8d22Jx6d5pRwOzQcgWLh">
+        <span class="field-label" data-page-node-id="0FYanT60cIJ5LvkOCGgb7W">作业内容</span>
+        <textarea id="fContent" rows="6" placeholder="例如：抄写第 5 课生字，每个 3 遍&#10;《》里的课文名会自动高亮显示"></textarea>
+      </label>
+
+      <!-- 备注（仅事项） -->
+      <div class="field ev-only">
+        <span class="field-label">备注（可选）</span>
+        <textarea id="fNote" rows="3" placeholder="补充说明，比如地点、要带什么"></textarea>
+      </div>
+
+      <div class="field" data-page-node-id="0jNfqOtKR8ioF1c1Ydp3ka">
+        <span class="field-label" data-page-node-id="F1558KJD3walZy6o3QcoOI">📎 附件（支持图片，可多张）</span>
+        <div class="attach-list" id="attachList" data-page-node-id="mAMwUoHebQoBUlHBEH0csh"></div>
+        <label class="btn small outline" id="btnAttachLabel" data-page-node-id="6JyRFtOTUCbSqVPeaiht0h">
+          ＋ 选择图片
+          <input type="file" id="fAttach" accept="image/*" multiple hidden data-page-node-id="e6wbuVC6gLw4KqJR2XAMB7">
+        </label>
+        <p class="hint" style="margin-top:6px" data-page-node-id="ZPdAHxr5RkKsOkClXWf74E">图片会自动压缩后保存，适合拍作业、试卷、通知单的照片。</p>
+      </div>
+      <div class="field two-col" data-page-node-id="q9r9iNu13BlLmctPOfllIC">
+        <label class="field" data-page-node-id="WZa3Ymx6o3UiWghCcNShv8">
+          <span class="field-label" data-page-node-id="6YlGl2wid5GpiDfHS2csk1">安排日期</span>
+          <input type="date" id="fDate" data-page-node-id="TS2GYIJmGCIcEaIJudlch1">
+        </label>
+        <label class="field hw-only" data-page-node-id="J1reLADiVPJABeixUBd1jZ">
+          <span class="field-label" data-page-node-id="M7eGAepm4y3uxZvzfzAPFQ">截止日期</span>
+          <input type="date" id="fDue" data-page-node-id="633aqZBdtD7hj6DljgK6JJ">
+        </label>
+      </div>
+      <div class="field hw-only" data-page-node-id="XyndJsbYyBiYuXxd6XxkL5">
+        <span class="field-label" data-page-node-id="f71lyfCnDwyETMvr4MnDiY">截止日期快捷设置</span>
+        <div class="chips wrap" id="quickDue" data-page-node-id="XyhpENC4v3lo6HIB1wYwB2">
+          <button class="chip" data-due="today" data-page-node-id="iF7CWnz5tf1lGMysr1S7mh">今天</button>
+          <button class="chip" data-due="tomorrow" data-page-node-id="9dBym3WRUmccwMH9p15FPV">明天</button>
+          <button class="chip" data-due="fri" data-page-node-id="c9dGnBKN3Xqb94BQf9FdNF">本周五</button>
+          <button class="chip" data-due="nextmon" data-page-node-id="wCRKdUbp4b93AoW5ACZoPF">下周一</button>
+        </div>
+      </div>
+      <label class="switch hw-only" data-page-node-id="al1tUlyij0UhWiIcfliseK">
+        <input type="checkbox" id="fSubmit" data-page-node-id="z9IXbkI3mT9alF2MrJsKaU">
+        <span class="switch-track" data-page-node-id="TEpCt74O3ktduCGG5kd3LQ"><span class="switch-dot" data-page-node-id="v1dlLcDVkpUQJYylX9aOjp"></span></span>
+        <span class="switch-text" data-page-node-id="eAuXuaAY0iBZ3Wv7weVPrW">📤 需要上交（带回学校交给老师）</span>
+      </label>
+      <label class="switch hw-only" data-page-node-id="D8rNt32eanKAdoOCI34OSq">
+        <input type="checkbox" id="fWeekend" data-page-node-id="2RUhriGn77nZDGpLqCAMam">
+        <span class="switch-track" data-page-node-id="GsF5a4OSqcP2lMSfoNwSQZ"><span class="switch-dot" data-page-node-id="dj8b1BU7XnQAaJDzVYMLnE"></span></span>
+        <span class="switch-text" data-page-node-id="qMwT160w4vGV95Fd4HRdqB">🗓️ 周末作业（周六、周日都显示）</span>
+      </label>
+      <label class="switch" data-page-node-id="27hVf78HydRdVLjFtuf9zF">
+        <input type="checkbox" id="fDone" data-page-node-id="hbNHahsXyOeIkdzztTbllm">
+        <span class="switch-track" data-page-node-id="5AAOf2htU2AGE0e0nFzbkw"><span class="switch-dot" data-page-node-id="CqPWYSKmqPuq9q04nI9ZqO"></span></span>
+        <span class="switch-text" data-page-node-id="qmu9dRlfheAcq4hWhk6vCM">标记为已完成</span>
+      </label>
+    </div>
+    <div class="modal-foot" data-page-node-id="BDeiSMleaRM30RwGptCO4G">
+      <button class="btn danger ghost" id="btnDelete" hidden data-page-node-id="sCI86qpb5zQ16U2T4EoItH">删除</button>
+      <span class="spacer" data-page-node-id="mWABe5hJn1zykfShoJAmQu"></span>
+      <button class="btn" data-close data-page-node-id="kI5z4AekZIgeQhkSMVLEzo">取消</button>
+      <button class="btn primary" id="btnSave" data-page-node-id="rkPjOb1s2XdCJnviuppzHD">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量粘贴弹窗 -->
+<div class="modal" id="batchModal" aria-hidden="true" data-page-node-id="674lXdFe9dUDNJWauoakKN">
+  <div class="modal-mask" data-bclose data-page-node-id="LGhp4pSoGgHmDOxD7abPvG"></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" data-page-node-id="fh5VASOkHS3W5yrtJn8n9J">
+    <div class="modal-head" data-page-node-id="JePmEakXoFMT7JJbLIuAzo">
+      <h3 data-page-node-id="BVokBTGzNBkQQm1IUW6AC3">📋 批量粘贴作业</h3>
+      <button class="icon-btn" data-bclose aria-label="关闭" data-page-node-id="gU9cdPdk3G3z9NK4D88FWo">✕</button>
+    </div>
+    <div class="modal-body" data-page-node-id="cvEhcnii1WuZoqg8eqbqFJ">
+      <p class="hint" data-page-node-id="QBiFF9VCCRnHY2IbEH1Mes">把老师发的整段作业直接粘进来，会自动按 <b data-page-node-id="uBjMkzSlXS4HsXPwSNQfXM">1. 2. 3.</b> 拆成多条，并自动判断类型。确认前可以逐条修改。</p>
+
+      <div class="field" data-page-node-id="GhRLglLMYnn8qwnH7B0FE1">
+        <span class="field-label" data-page-node-id="cYUgGCyzsZ8l2VvXxeonPD">科目</span>
+        <div class="big-choice" id="batchSubject" data-page-node-id="mCdBanCj2ItVKV08wAgfxu">
+          <button class="big-opt" data-value="语文" data-page-node-id="bgcBEJGFddd15L6MGDXt7s"><span class="opt-icon" data-page-node-id="d5JVHTrGzl8YAIAUdvPYsp">📖</span><span data-page-node-id="Nol72GUaWHkjAEXmLYBhl5">语文</span></button>
+          <button class="big-opt" data-value="数学" data-page-node-id="AbkT1aB5J6bxiqSyCnp8n5"><span class="opt-icon" data-page-node-id="ndyRoSW7cctxrHLIit3XaA">🔢</span><span data-page-node-id="BA0SwrVfBIMPkXKGMALPXa">数学</span></button>
+          <button class="big-opt" data-value="英语" data-page-node-id="GDuh0j5JtAfL4diYJ90nOu"><span class="opt-icon" data-page-node-id="YTLfyJUFj8EUYHCjcjPijx">🔤</span><span data-page-node-id="ICDz4kfxPrb3FIcsUjtE72">英语</span></button>
+        </div>
+      </div>
+
+      <div class="field two-col" data-page-node-id="KAareZMN4JCqNOM026kYXs">
+        <label class="field" data-page-node-id="ic7k2uZG4NxvLa90OMpjN3">
+          <span class="field-label" data-page-node-id="bsJ6c9TZfcJRbVQK1oL5AK">安排日期</span>
+          <input type="date" id="bDate" data-page-node-id="vGF7DGiRNR4kKy1EuLcczN">
+        </label>
+        <label class="field" data-page-node-id="yI77XLwkD80eAfqesBqFD2">
+          <span class="field-label" data-page-node-id="BYvESaaEbmJIiDLhw9vo6U">截止日期</span>
+          <input type="date" id="bDue" data-page-node-id="OMyh6qto6w6H39aCEHQEzP">
+        </label>
+      </div>
+      <div class="field" data-page-node-id="ukZCHrqAD8mjQoOAuZyOrW">
+        <span class="field-label" data-page-node-id="kqjzuwQ7Z88wvDpobph4T0">截止日期快捷设置</span>
+        <div class="chips wrap" id="bQuickDue" data-page-node-id="crnuVq5x8VNnAKotUlcgyr">
+          <button class="chip" data-due="today" data-page-node-id="uA1RpDTbxGfDp6A0QaPm1f">今天</button>
+          <button class="chip" data-due="tomorrow" data-page-node-id="wRgIoBarhB3kCkBt7A4YtB">明天</button>
+          <button class="chip" data-due="fri" data-page-node-id="GmPpiKOFYI7pD99gmAg5zK">本周五</button>
+          <button class="chip" data-due="nextmon" data-page-node-id="JsxYg1xMMVQD8tlWrwC9y3">下周一</button>
+        </div>
+      </div>
+
+      <label class="switch" data-page-node-id="X9MwfFnTImqs5AxHRBkCoz">
+        <input type="checkbox" id="bWeekend" data-page-node-id="n9KJ53nuc5A5Lx9FlMHb3P">
+        <span class="switch-track" data-page-node-id="zZkaL2BF2t1ulhHo5i8sMY"><span class="switch-dot" data-page-node-id="khxgHAyHGMAF8JVtVqEt3p"></span></span>
+        <span class="switch-text" data-page-node-id="NWVFN7mm57N2lw1gwO40mQ">🗓️ 周末作业（周六、周日都显示）</span>
+      </label>
+
+      <label class="field" data-page-node-id="dSHlx8CUeV9ecdpTXiNORo">
+        <span class="field-label" data-page-node-id="F6bKefpNbCHpuhMn0LOCjP">粘贴作业内容</span>
+        <textarea id="bText" rows="7" placeholder="1.读熟课文《小蝌蚪找妈妈》；&#10;2.背诵古诗《梅花》；&#10;3.预习《植物妈妈有办法》。"></textarea>
+      </label>
+
+      <div class="btn-row" data-page-node-id="687FsxsqA4rVTnmY66ePLQ">
+        <button class="btn primary" id="btnParse" data-page-node-id="UAUMCImiEpO9iFCgYKPZsK">✨ 识别拆分</button>
+        <button class="btn" id="btnClearBatch" data-page-node-id="9iaX1hXDxqhZm5kvXwCfIt">清空</button>
+      </div>
+
+      <div class="field" id="bPreviewWrap" hidden data-page-node-id="3eAyxQkzMd2lX3tBylk5xA">
+        <span class="field-label" data-page-node-id="W6mp4FFlfVsavw9RRc0Bkb">识别结果（可逐条改类型）</span>
+        <div id="bPreview" class="preview-list" data-page-node-id="wQwjXzVJPpHBBDPNI5fKmL"></div>
+      </div>
+    </div>
+    <div class="modal-foot" data-page-node-id="MlXOQ9AcktujgRc5iRWdZO">
+      <span class="spacer" data-page-node-id="Z2AnAVCxTTpoTL9yixfftb"></span>
+      <button class="btn" data-bclose data-page-node-id="X5Ths6SVo5LmhqhdZk11dC">取消</button>
+      <button class="btn primary" id="btnBatchSave" disabled data-page-node-id="Ds8FdVHRNgI5irDC0MiH35">确认添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 日详情弹窗（月历点某天后查看/添加当天内容） -->
+<div class="modal" id="dayModal" aria-hidden="true">
+  <div class="modal-mask" data-dclose></div>
+  <div class="modal-panel" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="dayTitle">某日</h3>
+      <button class="icon-btn" data-dclose aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="day-list" id="dayList"></div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn primary" data-dayadd="event">＋ 添加事项</button>
+        <button class="btn" data-dayadd="homework">＋ 添加作业</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden data-page-node-id="N0TyWDVFY9tNgZWKDcCn2G">
+  <button class="lightbox-close" aria-label="关闭" data-page-node-id="gX95HeaLuHZn18uScoJTDh">✕</button>
+  <img alt="" data-page-node-id="82VCHMKlKg3zrWTbY6pOTR" />
+  <div class="lightbox-name" data-page-node-id="zr06RqcoPqkyBRi2Q19S2G"></div>
+</div>
+
+<div class="toast" id="toast" data-page-node-id="DVDGnOFVo2ui3DX1tYGkhc"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

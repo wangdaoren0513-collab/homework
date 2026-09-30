@@ -1,0 +1,8 @@
+# 依赖 / 系统文件
+node_modules/
+.workbuddy/
+.DS_Store
+Thumbs.db
+
+# 本地运行数据（家庭局域网同步落盘，不进仓库）
+data/

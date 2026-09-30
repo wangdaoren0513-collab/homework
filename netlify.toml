@@ -1,0 +1,13 @@
+# Netlify 部署配置
+# 关键：把 netlify/functions 目录下的服务端函数一起打包部署，
+# 否则 /.netlify/functions/sb-proxy 不存在，云端同步仍会失败。
+
+[build]
+  # 静态文件所在目录（index.html / app.js / styles.css 都在项目根目录）
+  publish = "."
+  # 服务端函数目录
+  functions = "netlify/functions"
+
+# 函数超时（秒），同步数据量小，10s 足够
+[functions]
+  timeout = 10
