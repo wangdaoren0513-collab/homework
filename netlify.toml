@@ -8,6 +8,3 @@
   # 服务端函数目录
   functions = "netlify/functions"
 
-# 函数超时（秒），同步数据量小，10s 足够
-[functions]
-  timeout = 10
