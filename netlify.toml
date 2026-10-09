@@ -8,3 +8,8 @@
   # 服务端函数目录
   functions = "netlify/functions"
 
+# 定时保活：每天 UTC 09:00 向 Supabase 发一个极轻查询，
+# 维持项目「活跃」，防止免费版因连续 7 天无流量被自动暂停。
+[functions.keepalive]
+  schedule = "0 9 * * *"
+
