@@ -842,23 +842,34 @@
     if (s.syncType === 'rest') return !!s.syncCode;
     return false;
   }
+  // Netlify 中转代理的「绝对地址」。应用可能部署在任意域名
+  // （netlify.app / app.workbuddy.link / 自定义域名），从非 Netlify 域名调用代理必须用它，
+  // 因为相对路径 /.netlify/functions/... 只在 Netlify 自身上存在。
+  var PROXY_URL = 'https://quiet-banoffee-7f84f7.netlify.app/.netlify/functions/sb-proxy';
+
   function sbBase() {
     return (store.data.settings.sbUrl || '').trim().replace(/\/+$/, '');
   }
-  // 部署在 Netlify 上时，改走同域函数代理去连 Supabase：
-  // 国内手机直连 supabase.co 常被墙 / 超时，而 Netlify 本身可达，由服务端转发即可绕开墙与跨域。
-  // 本地或其他托管仍直连，保持原有行为。
+  // 云端中转代理：国内直连 supabase.co 常被墙 / 超时，由 Netlify 服务端转发绕开墙与跨域。
+  // - 部署在 Netlify 自身（netlify.app/com）：用相对路径，天然同域；
+  // - 本机预览（localhost / 127.0.0.1 / file）：直连，方便本地开发；
+  // - 其它部署域名（如 app.workbuddy.link）：走上面的绝对代理地址，跨域调用。
   function sbProxyOn() {
     try {
-      var h = (location.hostname || '');
-      if (/netlify\.(app|com)$/.test(h)) return true;
-    } catch (e) {}
-    return !!(store.data.settings.useProxy);
+      var h = (location.hostname || '').toLowerCase();
+      if (/netlify\.(app|com)$/.test(h)) return true;                       // 同域，相对路径
+      if (h === 'localhost' || h === '127.0.0.1' || h === '') return false; // 本机直连
+      return true;                                                         // 其它域名：走绝对代理
+    } catch (e) { return false; }
   }
   function sbFetchUrl(path) {
     if (sbProxyOn()) {
       var base = (store.data.settings.sbUrl || CLOUD_DEFAULTS.sbUrl || '').trim().replace(/\/+$/, '');
-      return '/.netlify/functions/sb-proxy?u=' + encodeURIComponent(base + path);
+      var target = base + path;
+      if (/netlify\.(app|com)$/.test((location.hostname || '').toLowerCase())) {
+        return '/.netlify/functions/sb-proxy?u=' + encodeURIComponent(target);
+      }
+      return PROXY_URL + '?u=' + encodeURIComponent(target);
     }
     return sbBase() + path;
   }
