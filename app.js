@@ -4,9 +4,9 @@
 
   /* ==================== 常量 ==================== */
   var SUBJECTS = {
-    '语文': { icon: '📖', color: '#f97316' },
-    '数学': { icon: '🔢', color: '#3b82f6' },
-    '英语': { icon: '🔤', color: '#8b5cf6' }
+    '语文': { icon: 'book', color: '#F97316' },
+    '数学': { icon: 'book', color: '#0EA5E9' },
+    '英语': { icon: 'book', color: '#8B5CF6' }
   };
   var SUBJECT_KEYS = ['语文', '数学', '英语'];
   var TYPES = [
@@ -53,13 +53,32 @@
 
   // 其他事项分类（除作业外：待办 / 课程 / 提醒 / 其他），与作业共用周/月/年视图
   var EVENT_META = {
-    todo:     { icon: '📝', color: '#f59e0b', label: '待办' },
-    course:   { icon: '📚', color: '#8b5cf6', label: '课程' },
-    reminder: { icon: '⏰', color: '#ef4444', label: '提醒' },
-    other:    { icon: '📌', color: '#64748b', label: '其他' }
+    todo:     { icon: 'todo',   color: '#F59E0B', label: '待办' },
+    course:   { icon: 'course', color: '#8B5CF6', label: '课程' },
+    reminder: { icon: 'remind', color: '#EF4444', label: '提醒' },
+    other:    { icon: 'other',  color: '#64748B', label: '其他' }
   };
   var EVENT_CATS = ['todo', 'course', 'reminder', 'other'];
   function eventMeta(k) { return EVENT_META[k] || EVENT_META.other; }
+
+  /* ===== 统一线性图标库（2px 描边） ===== */
+  var ICONS = {
+    book:   '<path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M18 3v16"/>',
+    todo:   '<path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4 12 14.1l-3-3"/>',
+    course: '<path d="M2 4h6a3 3 0 0 1 3 3v11a2 2 0 0 0-2-2H2z"/><path d="M22 4h-6a3 3 0 0 0-3 3v11a2 2 0 0 1 2-2h7z"/>',
+    remind: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
+    other:  '<path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/>',
+    plus:   '<path d="M12 5v14M5 12h14"/>',
+    check:  '<path d="M20 6 9 17l-5-5"/>',
+    cal:    '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
+    clock:  '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    cloud:  '<path d="M17 18a4 4 0 0 0 .5-8A6 6 0 0 0 6 9a4 4 0 0 0 5 9"/>',
+    edit:   '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    trash:  '<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>'
+  };
+  function svgIcon(name) {
+    return '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || '') + '</svg>';
+  }
 
   // 把一整段作业文字拆成多条
   function parseHomework(raw) {
@@ -406,7 +425,7 @@
 
   function cardNode(it) {
     var isEvent = !!(it.kind && it.kind !== 'homework');
-    var accent = isEvent ? eventMeta(it.category) : (SUBJECTS[it.subject] || { icon: '📌', color: '#94a3b8' });
+    var accent = isEvent ? eventMeta(it.category) : (SUBJECTS[it.subject] || { icon: 'book', color: '#64748B' });
     var wrap = el('div', 'hw' + (it.done ? ' is-done' : '') + (isEvent ? ' is-event' : ''));
     wrap.style.borderLeftColor = accent.color;
     wrap.setAttribute('data-id', it.id);
@@ -425,11 +444,12 @@
     var main = el('div', 'hw-main');
     main.setAttribute('data-act', 'edit');
     var top = el('div', 'hw-top');
-    var badge = el('span', 'hw-subject', accent.icon + ' ' + (isEvent ? eventMeta(it.category).label : it.subject));
+    var badge = el('span', 'hw-subject');
     badge.style.background = accent.color;
+    badge.innerHTML = svgIcon(isEvent ? eventMeta(it.category).icon : 'book') + ' ' + (isEvent ? eventMeta(it.category).label : it.subject);
     top.appendChild(badge);
     if (isEvent) {
-      if (it.time) top.appendChild(el('span', 'hw-type', '🕒 ' + it.time));
+      if (it.time) { var tt = el('span', 'hw-type'); tt.innerHTML = svgIcon('clock') + ' ' + it.time; top.appendChild(tt); }
     } else {
       top.appendChild(el('span', 'hw-type', typeIcon(it.type) + ' ' + it.type));
       if (it.submit) top.appendChild(el('span', 'hw-flag is-submit', '📤 需上交'));
@@ -437,7 +457,7 @@
     }
     // 安排到周几的小标签（因为不再按天分列，这里标注一下）
     var dIdx = (parseKey(it.date).getDay() + 6) % 7;
-    top.appendChild(el('span', 'hw-day', '📅 ' + (WEEKDAY[dIdx] || '')));
+    var dt = el('span', 'hw-day'); dt.innerHTML = svgIcon('cal') + ' ' + (WEEKDAY[dIdx] || ''); top.appendChild(dt);
     main.appendChild(top);
 
     var ctext = isEvent ? (it.title || '（未命名事项）') : (it.content || '（无内容）');
@@ -455,7 +475,7 @@
     // 事件的备注作为次要说明
     if (isEvent && it.note) {
       var note = el('div', 'hw-note');
-      fillContent(note, '📝 ' + it.note);
+      fillContent(note, it.note);
       main.appendChild(note);
     }
 
@@ -489,7 +509,7 @@
     wrap.appendChild(main);
 
     var acts = el('div', 'hw-actions');
-    var ed = el('button', 'mini-btn', '✏️');
+    var ed = el('button', 'mini-btn'); ed.innerHTML = svgIcon('edit');
     ed.setAttribute('data-act', 'edit');
     ed.title = '编辑';
     acts.appendChild(ed);
@@ -515,7 +535,7 @@
       var d = arr.filter(function (it) { return it.done; }).length;
       var p = arr.length ? Math.round(d / arr.length * 100) : 0;
       var row = el('div', 'sbar');
-      row.appendChild(el('div', 'sbar-name', SUBJECTS[s].icon + ' ' + s));
+      row.appendChild(el('div', 'sbar-name', s));
       var track = el('div', 'sbar-track');
       var fill = el('div', 'sbar-fill');
       fill.style.width = p + '%';
@@ -560,10 +580,10 @@
     var sum = $('histSummary');
     sum.innerHTML = '';
     [
-      { k: '统计周数', v: keys.length + ' 周', c: '#3b82f6' },
-      { k: '作业总数', v: sumTotal + ' 项', c: '#64748b' },
-      { k: '已完成', v: sumDone + ' 项', c: '#16a34a' },
-      { k: '总完成率', v: (sumTotal ? Math.round(sumDone / sumTotal * 100) : 0) + '%', c: '#16a34a' }
+      { k: '统计周数', v: keys.length + ' 周', c: '#5B6CFF' },
+      { k: '作业总数', v: sumTotal + ' 项', c: '#64748B' },
+      { k: '已完成', v: sumDone + ' 项', c: '#10B981' },
+      { k: '总完成率', v: (sumTotal ? Math.round(sumDone / sumTotal * 100) : 0) + '%', c: '#10B981' }
     ].forEach(function (s) {
       var b = el('div', 'sum-box');
       b.appendChild(el('div', 'k', s.k));
@@ -760,7 +780,13 @@
   function setSyncState(txt, ok) {
     var n = $('syncState');
     n.textContent = txt;
-    n.style.color = ok === false ? '#ef4444' : (ok === true ? '#16a34a' : '#64748b');
+    n.style.color = ok === false ? '#EF4444' : (ok === true ? '#10B981' : '#6B7280');
+    var badge = $('cloudBadge');
+    if (badge) {
+      if (ok === true) { badge.textContent = '☁ 已同步'; badge.className = 'cloud-badge is-ok'; }
+      else if (ok === false) { badge.textContent = '☁ 未连接'; badge.className = 'cloud-badge is-err'; }
+      else { badge.textContent = '☁ 本地'; badge.className = 'cloud-badge'; }
+    }
   }
   function timeText() {
     var d = lastSyncAt || new Date();
@@ -1157,12 +1183,13 @@
     var box = $('choiceKind');
     if (!box) return;
     box.innerHTML = '';
-    var opts = [{ kind: 'homework', cat: '', icon: '📖', label: '作业' }].concat(
+    var opts = [{ kind: 'homework', cat: '', icon: 'book', label: '作业' }].concat(
       EVENT_CATS.map(function (c) { return { kind: 'event', cat: c, icon: eventMeta(c).icon, label: eventMeta(c).label }; })
     );
     opts.forEach(function (o) {
       var on = (draft.kind === o.kind) && (o.kind === 'event' ? draft.category === o.cat : true);
-      var b = el('button', 'chip' + (on ? ' is-on' : ''), o.icon + ' ' + o.label);
+      var b = el('button', 'chip' + (on ? ' is-on' : ''));
+      b.innerHTML = svgIcon(o.icon) + ' ' + o.label;
       b.setAttribute('data-kind', o.kind);
       if (o.cat) b.setAttribute('data-cat', o.cat);
       box.appendChild(b);
