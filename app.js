@@ -9,48 +9,8 @@
     '英语': { icon: 'book', color: '#8B5CF6' }
   };
   var SUBJECT_KEYS = ['语文', '数学', '英语'];
-  var TYPES = [
-    { k: '预习', i: '🔍' }, { k: '写', i: '✍️' }, { k: '读', i: '📚' },
-    { k: '背', i: '🎤' }, { k: '说', i: '🗣️' }, { k: '听', i: '🎧' },
-    { k: '准备', i: '🎒' }, { k: '复习', i: '🔁' }, { k: '其他', i: '📌' }
-  ];
-  // 旧类型 -> 新类型（"做" 合并进 "写"）
+  // 旧类型 -> 新类型（历史数据兼容：旧 "做" 合并进 "写"）
   var TYPE_MIGRATE = { '做': '写' };
-  var TYPE_KEYS = TYPES.map(function (t) { return t.k; });
-  function typeIcon(k) {
-    var t = TYPES.filter(function (x) { return x.k === k; })[0];
-    return t ? t.i : '📌';
-  }
-  // 智能识别：按优先级匹配关键词（顺序很重要，"听写" 要命中"写"而不是"听"）
-  var TYPE_RULES = [
-    ['预习', /预习/],
-    ['背', /背诵|背熟|背课文|背古诗|背《|背出/],
-    ['读', /朗读|诵读|读熟|读课文|\S读/],
-    ['写', /听写|抄写|默写|写字|作文|练字|写/],
-    ['准备', /自备|准备|购买|带上|带齐|带/],
-    ['说', /复述|口头|说一说|讲述|说/],
-    ['听', /听力|听录音|音频|听/],
-    ['复习', /复习|回顾/]
-  ];
-  var SUBJECT_RULES = [
-    ['数学', /数学|口算|计算|应用题|算式|竖式|单位换算/],
-    ['英语', /英语|单词|字母|english|let's|unit/i]
-  ];
-  function guessType(text) {
-    for (var i = 0; i < TYPE_RULES.length; i++) {
-      if (TYPE_RULES[i][1].test(text)) return TYPE_RULES[i][0];
-    }
-    return '其他';
-  }
-  function guessSubject(text, fallback) {
-    for (var i = 0; i < SUBJECT_RULES.length; i++) {
-      if (SUBJECT_RULES[i][1].test(text)) return SUBJECT_RULES[i][0];
-    }
-    return fallback || '语文';
-  }
-  // "周一返校时上交" / "带回学校" / "交老师" → 需要上交
-  function guessSubmit(text) { return /上交|交给|带回|提交|交老师|返校时交|要交/.test(text); }
-
   // 其他事项分类（除作业外：待办 / 课程 / 提醒 / 其他），与作业共用周/月/年视图
   var EVENT_META = {
     todo:     { icon: 'todo',   color: '#F59E0B', label: '待办' },
@@ -80,59 +40,6 @@
     return '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || '') + '</svg>';
   }
 
-  // 把一整段作业文字拆成多条
-  function parseHomework(raw) {
-    var text = String(raw || '').replace(/\r/g, '');
-    if (!text.trim()) return [];
-    var lines = text.split('\n');
-
-    // 先看是否存在 "1." "2、" "①" "(1)" 这类编号
-    var numbered = [];
-    var buf = null;
-    var numRe = /^\s*(?:[（(]?(\d{1,2})[)）]?\s*[.、．)）:：]|([①-⑳])\s*)/;
-    lines.forEach(function (ln) {
-      var m = ln.match(numRe);
-      if (m) {
-        if (buf) numbered.push(buf);
-        buf = ln.replace(numRe, '').trim();
-      } else if (buf != null) {
-        // 续行：属于上一条（例如听写词语另起一行的情况）
-        buf += (buf ? '\n' : '') + ln.trim();
-      } else if (ln.trim()) {
-        buf = ln.trim();
-      }
-    });
-    if (buf) numbered.push(buf);
-
-    var parts;
-    if (numbered.length >= 2) {
-      parts = numbered;
-    } else {
-      // 没有编号：按换行 / 中文分号 / 句号拆分
-      parts = [];
-      text.split(/[\n；;]/).forEach(function (s) {
-        var t = s.trim().replace(/^[0-9]+\s*[.、．)）]\s*/, '');
-        if (t) parts.push(t);
-      });
-      if (parts.length === 1) {
-        // 只有一句：再按 "。" 拆，避免整段变成一条
-        var byPeriod = parts[0].split('。').map(function (s) { return s.trim(); }).filter(Boolean);
-        if (byPeriod.length > 1) parts = byPeriod.map(function (s, i) { return i === byPeriod.length - 1 ? s : s + '。'; });
-      }
-    }
-
-    return parts
-      .map(function (s) { return s.replace(/\s+$/, '').trim(); })
-      .filter(function (s) { return s.length > 0; })
-      .map(function (s) {
-        return {
-          content: s,
-          type: guessType(s),
-          subject: guessSubject(s, null),
-          submit: guessSubmit(s)
-        };
-      });
-  }
   var WEEKDAY = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
   var STORE_KEY = 'homework-buddy.v1';
 
@@ -378,9 +285,15 @@
       if (dayItems.length) {
         var wrap = el('div', 'mc-items');
         dayItems.slice(0, 3).forEach(function (it) {
-          var ic = it.kind && it.kind !== 'homework' ? eventMeta(it.category).icon : (SUBJECTS[it.subject] || { icon: '📌' }).icon;
-          var label = it.kind && it.kind !== 'homework' ? (it.title || '').slice(0, 6) : (it.subject || '');
-          wrap.appendChild(el('span', 'mc-chip' + (it.done ? ' is-done' : ''), ic + ' ' + label));
+          var isEv = !!(it.kind && it.kind !== 'homework');
+          var ic = isEv ? eventMeta(it.category).icon : (SUBJECTS[it.subject] || { icon: 'book' }).icon;
+          var label = isEv ? (it.title || '').slice(0, 6) : (it.subject || '');
+          var chip = el('span', 'mc-chip' + (it.done ? ' is-done' : ''));
+          chip.innerHTML = svgIcon(ic);
+          var lab = document.createElement('span');
+          lab.textContent = ' ' + label;
+          chip.appendChild(lab);
+          wrap.appendChild(chip);
         });
         cell.appendChild(wrap);
         if (dayItems.length > 3) cell.appendChild(el('div', 'mc-more', '+' + (dayItems.length - 3)));
@@ -451,9 +364,7 @@
     if (isEvent) {
       if (it.time) { var tt = el('span', 'hw-type'); tt.innerHTML = svgIcon('clock') + ' ' + it.time; top.appendChild(tt); }
     } else {
-      top.appendChild(el('span', 'hw-type', typeIcon(it.type) + ' ' + it.type));
       if (it.submit) top.appendChild(el('span', 'hw-flag is-submit', '📤 需上交'));
-      if (it.weekend) top.appendChild(el('span', 'hw-flag is-weekend', '🗓️ 周末'));
     }
     // 安排到周几的小标签（因为不再按天分列，这里标注一下）
     var dIdx = (parseKey(it.date).getDay() + 6) % 7;
@@ -1042,154 +953,9 @@
     $('howtoRest').hidden = (t !== 'rest');
   }
 
-  /* ==================== 批量粘贴 ==================== */
-  var batch = { subject: '语文', rows: [] };
-
-  function openBatch() {
-    batch.subject = '语文';
-    batch.rows = [];
-    var d = todayKey();
-    $('bDate').value = d;
-    $('bDue').value = d;
-    $('bWeekend').checked = false;
-    $('bText').value = '';
-    $('bPreview').innerHTML = '';
-    $('bPreviewWrap').hidden = true;
-    $('btnBatchSave').disabled = true;
-    $('btnBatchSave').textContent = '确认添加';
-    syncBatchSubjectUI();
-    $('batchModal').classList.add('is-open');
-    $('batchModal').setAttribute('aria-hidden', 'false');
-  }
-  function closeBatch() {
-    $('batchModal').classList.remove('is-open');
-    $('batchModal').setAttribute('aria-hidden', 'true');
-  }
-  function syncBatchSubjectUI() {
-    Array.prototype.forEach.call($('batchSubject').children, function (b) {
-      b.classList.toggle('is-on', b.getAttribute('data-value') === batch.subject);
-    });
-  }
-
-  function renderPreview() {
-    var box = $('bPreview');
-    box.innerHTML = '';
-    // 先显示容器，否则 autoGrow 量到的 scrollHeight 是 0
-    $('bPreviewWrap').hidden = batch.rows.length === 0;
-    batch.rows.forEach(function (r, i) {
-      var row = el('div', 'preview-row');
-
-      var top = el('div', 'preview-top');
-      top.appendChild(el('span', 'preview-no', '第 ' + (i + 1) + ' 条'));
-
-      var selType = document.createElement('select');
-      selType.className = 'mini-select';
-      TYPES.forEach(function (t) {
-        var o = document.createElement('option');
-        o.value = t.k;
-        o.textContent = t.i + ' ' + t.k;
-        if (t.k === r.type) o.selected = true;
-        selType.appendChild(o);
-      });
-      selType.addEventListener('change', function () { r.type = this.value; });
-      top.appendChild(selType);
-
-      var selSub = document.createElement('select');
-      selSub.className = 'mini-select';
-      SUBJECT_KEYS.forEach(function (s) {
-        var o = document.createElement('option');
-        o.value = s;
-        o.textContent = (SUBJECTS[s] || { icon: '📌' }).icon + ' ' + s;
-        if (s === r.subject) o.selected = true;
-        selSub.appendChild(o);
-      });
-      selSub.addEventListener('change', function () { r.subject = this.value; });
-      top.appendChild(selSub);
-
-      var del = el('button', 'mini-btn', '🗑️');
-      del.title = '移除这一条';
-      del.addEventListener('click', function () {
-        batch.rows.splice(i, 1);
-        renderPreview();
-      });
-      top.appendChild(del);
-      row.appendChild(top);
-
-      var ta = document.createElement('textarea');
-      ta.className = 'preview-text';
-      ta.rows = 2;
-      ta.value = r.content;
-      ta.addEventListener('input', function () { r.content = this.value; autoGrow(this); });
-      row.appendChild(ta);
-
-      var lab = el('label', 'switch small');
-      var cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.checked = !!r.submit;
-      cb.addEventListener('change', function () { r.submit = this.checked; });
-      var track = el('span', 'switch-track');
-      track.appendChild(el('span', 'switch-dot'));
-      lab.appendChild(cb);
-      lab.appendChild(track);
-      lab.appendChild(el('span', 'switch-text', '📤 需上交'));
-      row.appendChild(lab);
-
-      box.appendChild(row);
-      autoGrow(ta);
-    });
-
-    var n = batch.rows.length;
-    $('bPreviewWrap').hidden = n === 0;
-    $('btnBatchSave').disabled = n === 0;
-    $('btnBatchSave').textContent = n ? ('确认添加 ' + n + ' 条') : '确认添加';
-  }
-
-  function batchParse() {
-    var rows = parseHomework($('bText').value);
-    if (!rows.length) { toast('没有识别到作业内容，请先粘贴'); return; }
-    batch.rows = rows.map(function (r) {
-      return { content: r.content, type: r.type, subject: r.subject || batch.subject, submit: r.submit };
-    });
-    renderPreview();
-    toast('识别到 ' + batch.rows.length + ' 条，可逐条修改后添加');
-  }
-
-  function batchSave() {
-    var date = $('bDate').value || todayKey();
-    var due = $('bDue').value || date;
-    var weekend = $('bWeekend').checked;
-    var n = 0;
-    batch.rows.forEach(function (r) {
-      if (!String(r.content || '').trim()) return;
-      saveItem({
-        subject: r.subject,
-        type: r.type,
-        content: r.content.trim(),
-        date: date,
-        due: due,
-        done: false,
-        submit: !!r.submit,
-        weekend: weekend
-      });
-      n++;
-    });
-    if (!n) { toast('没有可添加的内容'); return; }
-    closeBatch();
-    toast('已添加 ' + n + ' 条作业 🎉');
-  }
-
   /* ==================== 弹窗 ==================== */
   var draft = { kind: 'homework', subject: '语文', type: '写', category: 'todo', title: '', time: '', note: '', attachments: [] };
 
-  function buildTypeChips() {
-    var box = $('choiceType');
-    box.innerHTML = '';
-    TYPES.forEach(function (t) {
-      var b = el('button', 'chip' + (draft.type === t.k ? ' is-on' : ''), t.i + ' ' + t.k);
-      b.setAttribute('data-type', t.k);
-      box.appendChild(b);
-    });
-  }
   function buildKindChips() {
     var box = $('choiceKind');
     if (!box) return;
@@ -1247,10 +1013,8 @@
     $('fDue').value = item && !isEvent ? (item.due || $('fDate').value) : $('fDate').value;
     $('fDone').checked = item ? item.done : false;
     $('fSubmit').checked = item && !isEvent ? !!item.submit : false;
-    $('fWeekend').checked = item && !isEvent ? !!item.weekend : false;
 
     renderAttachList();
-    buildTypeChips();
     syncSubjectUI();
     applyKindUI();
     $('editModal').classList.add('is-open');
@@ -1480,26 +1244,6 @@
       if (e.target.closest('.lightbox-close') || e.target === this) closeLightbox();
     });
 
-    // 批量粘贴
-    $('btnBatch').addEventListener('click', openBatch);
-    $('batchModal').addEventListener('click', function (e) {
-      if (e.target.closest('[data-bclose]')) closeBatch();
-    });
-    $('batchSubject').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-value]');
-      if (!b) return;
-      batch.subject = b.getAttribute('data-value');
-      syncBatchSubjectUI();
-    });
-    $('btnParse').addEventListener('click', batchParse);
-    $('btnBatchSave').addEventListener('click', batchSave);
-    $('btnClearBatch').addEventListener('click', function () {
-      $('bText').value = '';
-      batch.rows = [];
-      renderPreview();
-      toast('已清空');
-    });
-
     // 内容框随输入自动增高
     $('fContent').addEventListener('input', function () { autoGrow(this); });
 
@@ -1514,7 +1258,6 @@
       });
     }
     bindQuickDue('quickDue', 'fDue');
-    bindQuickDue('bQuickDue', 'bDue');
 
     // 弹窗
     $('editModal').addEventListener('click', function (e) {
@@ -1525,12 +1268,6 @@
       if (!b) return;
       draft.subject = b.getAttribute('data-value');
       syncSubjectUI();
-    });
-    $('choiceType').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-type]');
-      if (!b) return;
-      draft.type = b.getAttribute('data-type');
-      buildTypeChips();
     });
     $('choiceKind').addEventListener('click', function (e) {
       var b = e.target.closest('[data-kind]');
@@ -1556,7 +1293,6 @@
         payload.content = content;
         payload.due = $('fDue').value || date;
         payload.submit = $('fSubmit').checked;
-        payload.weekend = $('fWeekend').checked;
       } else {
         var title = $('fTitle').value.trim();
         if (!title) { toast('请填写事项标题'); $('fTitle').focus(); return; }

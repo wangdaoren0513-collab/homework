@@ -491,7 +491,7 @@ textarea { resize: vertical; }
 /* ---------------- FAB ---------------- */
 .fab {
   position: fixed;
-  right: 20px;
+  left: 20px;
   bottom: calc(20px + env(safe-area-inset-bottom));
   width: 58px; height: 58px;
   border-radius: 50%;
@@ -547,7 +547,8 @@ textarea { resize: vertical; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   font-size: 16px; font-weight: 800; color: var(--text-2);
 }
-.opt-icon { font-size: 26px; }
+.opt-icon { font-size: 26px; display: flex; align-items: center; justify-content: center; }
+.opt-icon svg { width: 28px; height: 28px; }
 .big-opt.is-on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-ink); }
 
 /* ---------------- Toast ---------------- */
@@ -584,7 +585,7 @@ textarea { resize: vertical; }
   .stat-info { width: 100%; }
   .stat-line { text-align: center; }
   .field.two-col { grid-template-columns: 1fr; }
-  .fab { right: 16px; width: 54px; height: 54px; }
+  .fab { left: 16px; width: 54px; height: 54px; }
   .fab svg { width: 24px; height: 24px; }
   .hist-pct { text-align: left; }
 }
@@ -688,6 +689,7 @@ textarea { resize: vertical; }
   border-radius: 6px; padding: 2px 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .mc-chip.is-done { opacity: .5; text-decoration: line-through; }
+.mc-chip .i { width: 13px; height: 13px; margin-right: 3px; vertical-align: -2px; flex: none; }
 .mc-more { font-size: 11px; color: var(--text-2); padding-left: 2px; }
 .mc-add {
   position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
