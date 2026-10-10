@@ -534,7 +534,7 @@ textarea { resize: vertical; }
 }
 .icon-btn:hover { background: var(--line); }
 .modal-body { padding: 16px; }
-.modal-foot { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: center; }
+.modal-foot { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: center; justify-content: flex-start; }
 .spacer { flex: 1; }
 
 .big-choice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
